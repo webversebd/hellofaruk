@@ -14,7 +14,7 @@ async function main() {
 
   await db.adminUser.upsert({
     where: { email },
-    update: { passwordHash: await bcrypt.hash(password, 12) },
+    update: {},
     create: { email, name: "Faruk Hasan", passwordHash: await bcrypt.hash(password, 12) },
   });
 
