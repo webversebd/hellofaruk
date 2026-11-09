@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f8f8f5;
+  --color-surface: #ffffff;
+  --color-ink: #171717;
+  --color-muted: #737373;
+  --color-accent: #a58b65;
+  --color-line: #eae8e3;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+body { background: var(--color-bg); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+::selection { background: var(--color-accent); color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); font-weight: 700; }
+.container-x { width: 100%; max-width: 76rem; margin-inline: auto; padding-inline: 1.25rem; }
+@media (min-width: 768px) { .container-x { padding-inline: 2rem; } }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.9rem; padding: 0 1.5rem; border-radius: 999px; font-weight: 600; font-size: .92rem; transition: all .25s ease; }
+.btn-dark { background: var(--color-ink); color: #fff; }
+.btn-dark:hover { background: var(--color-accent); }
+.btn-line { border: 1px solid var(--color-ink); }
+.btn-line:hover { background: var(--color-ink); color: #fff; }
+.input { width: 100%; min-height: 2.9rem; border: 1px solid var(--color-line); background: #fff; border-radius: .75rem; padding: .65rem .9rem; font-size: .95rem; outline: none; transition: border-color .2s; }
+.input:focus { border-color: var(--color-accent); }

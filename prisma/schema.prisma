@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model AdminUser {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  name         String   @default("Admin")
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Profile {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  title       String
+  aboutLabel  String   @default("About Me")
+  aboutHeadline String @default("Turning Ideas Into Meaningful Digital Experiences.")
+  aboutBody   String   @db.Text
+  story       String   @db.Text
+  experience  String   @db.Text
+  imageUrl    String?
+  imageAlt    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model HeroSection {
+  id             String   @id @default(uuid()) @db.Uuid
+  availability   String   @default("Available for select projects")
+  isAvailable    Boolean  @default(true)
+  heading        String
+  description    String   @db.Text
+  identity       String
+  portraitUrl    String?
+  portraitAlt    String?
+  primaryLabel   String   @default("Let's Work Together")
+  primaryHref    String   @default("#contact")
+  secondaryLabel String   @default("Explore My Work")
+  secondaryHref  String   @default("#projects")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Statistic {
+  id        String   @id @default(uuid()) @db.Uuid
+  label     String
+  value     String
+  sortOrder Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Skill {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  sortOrder Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Service {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String   @unique
+  shortDesc   String
+  detailDesc  String?  @db.Text
+  icon        String   @default("ShoppingBag")
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+}
+
+model ProjectCategory {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String    @unique
+  sortOrder Int       @default(0)
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id          String           @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String           @unique
+  brandName   String
+  shortDesc   String
+  caseStudy   String?          @db.Text
+  imageUrl    String?
+  imageAlt    String?
+  liveUrl     String?
+  technologies String[]
+  categoryId  String?          @db.Uuid
+  category    ProjectCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  isFeatured  Boolean          @default(false)
+  isPublished Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([isPublished, sortOrder])
+  @@index([categoryId])
+}
+
+model Brand {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  logoUrl     String?
+  websiteUrl  String
+  shortDesc   String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+}
+
+model Testimonial {
+  id          String   @id @default(uuid()) @db.Uuid
+  clientName  String
+  photoUrl    String?
+  company     String?
+  designation String?
+  review      String   @db.Text
+  rating      Int      @default(5)
+  websiteUrl  String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+}
+
+model ContactInquiry {
+  id          String        @id @default(uuid()) @db.Uuid
+  name        String
+  email       String
+  phone       String?
+  projectType String?
+  budget      String?
+  message     String        @db.Text
+  status      InquiryStatus @default(NEW)
+  ipHash      String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@index([createdAt])
+}
+
+model SocialLink {
+  id        String   @id @default(uuid()) @db.Uuid
+  platform  String   @unique
+  url       String
+  isEnabled Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WebsiteSettings {
+  id              String   @id @default(uuid()) @db.Uuid
+  siteName        String   @default("Faruk Hasan")
+  tagline         String   @default("E-commerce & Digital Experiences")
+  phone           String?
+  whatsapp        String?
+  whatsappMessage String   @default("Hi Faruk, I'd like to discuss a project.")
+  email           String?
+  logoUrl         String?
+  faviconUrl      String?
+  seoTitle        String   @default("Faruk Hasan | Shopify Expert & E-commerce Developer")
+  seoDescription  String   @default("Shopify expert and e-commerce developer helping brands build, optimize and grow high-performing online stores.")
+  seoKeywords     String?
+  ogImageUrl      String?
+  footerTagline   String   @default("Building digital experiences that drive e-commerce growth.")
+  footerCopyright String?
+  accentColor     String   @default("#A58B65")
+  contactHeadline String   @default("Have a Project in Mind? Let's Build Something Great.")
+  contactText     String   @default("Whether you're launching a new Shopify store, improving an existing e-commerce business, or exploring a new digital project, I'd love to hear from you.")
+  analyticsId     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model NavigationItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  label     String
+  href      String
+  sortOrder Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model SectionSetting {
+  id        String   @id @default(uuid()) @db.Uuid
+  key       String   @unique
+  label     String
+  heading   String?
+  subheading String?
+  isVisible Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
